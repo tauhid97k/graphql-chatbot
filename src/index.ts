@@ -9,7 +9,9 @@ import {
 import { typeDefs } from "./schema.ts";
 import { resolvers } from "./resolvers.ts";
 import { config } from "./config/env.ts";
+import { getAuthContext, requireAuth } from "./auth/auth.ts";
 
+// Create the Apollo Server
 const server = new ApolloServer({
   typeDefs: [LongTypeDefinition, JSONDefinition, typeDefs],
   resolvers: {
@@ -19,8 +21,19 @@ const server = new ApolloServer({
   },
 });
 
+// Start the server with authentication middleware
 const { url } = await startStandaloneServer(server, {
   listen: { port: config.port },
+  context: async ({ req }) => {
+    // Get the authorization header from the request
+    const authHeader = req.headers.authorization || '';
+    
+    // Create the auth context
+    const auth = getAuthContext(authHeader);
+    
+    // Return the context with auth information
+    return { auth, requireAuth };
+  },
 });
 
 console.log(`🚀  Server ready at: ${url}`);

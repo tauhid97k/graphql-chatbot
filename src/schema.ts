@@ -71,15 +71,39 @@ export const typeDefs = `#graphql
         responseIds: [ID]
         actions: [Action]
         actionIds: [ID]
+        preActions: [Action]
+        preActionIds: [ID]
+        postActions: [Action]
+        postActionIds: [ID]
         priority: Float
         compositeId: ID
         global: Boolean
         colour: String
+        redirect: RedirectInfo
+        position: Position
+        saveCompositeId: Boolean
         createdAt: Long!
         updatedAt: Long
+    }
+    
+    type Position {
+        x: Float
+        y: Float
+    }
+    
+    type RedirectInfo {
+        nodeCompositeId: ID
+        sendResponse: Boolean
+        runPreAction: Boolean
+        runPostAction: Boolean
     }
 
     type Query {
         node(nodeId: ID): NodeObject
+        nodes: [NodeObject]
+        actions: [Action]
+        triggers: [Trigger]
+        responses: [Response]
+        resourceTemplates: [ResourceTemplate]
     }
 `;
